@@ -76,8 +76,8 @@ init settings =
             , moveCount = 0
             , p1MoveCount = 0
             , p2MoveCount = 0
-            , p1Score = settings.towerSize
-            , p2Score = settings.towerSize
+            , p1Score = 0
+            , p2Score = 0
             , c1 = -1
             , c2 = -1
             , stage = StageSelectC1
@@ -127,7 +127,7 @@ applyMove move game =
                     getTidiness newTower
                 
                 newWinner = 
-                    if newScore < game.p1Score && newScore < game.p2Score then
+                    if newScore > game.p1Score && newScore > game.p2Score then
                         game.turn
                     else
                         game.winning
@@ -145,20 +145,20 @@ applyMove move game =
                         Player1 ->
                             if towerSolved newTower then
                                 { game | tower = newTower, moveCount = game.moveCount + 1, p1MoveCount = game.p1MoveCount + 1
-                                , turn = Player2, c1 = -1, c2 = -1, status = Complete newWinner,  p1Score = Basics.min newScore game.p1Score,
+                                , turn = Player2, c1 = -1, c2 = -1, status = Complete newWinner,  p1Score = Basics.max newScore game.p1Score,
                                 winning = newWinner }
                             else
                                 { game | tower = newTower, moveCount = game.moveCount + 1, p1MoveCount = game.p1MoveCount + 1
-                                , turn = Player2, c1 = -1, c2 = -1, stage = StageSelectC1, p1Score = Basics.min newScore game.p1Score,
+                                , turn = Player2, c1 = -1, c2 = -1, stage = StageSelectC1, p1Score = Basics.max newScore game.p1Score,
                                 winning = newWinner}
                         Player2 ->
                             if towerSolved newTower || game.p1MoveCount == game.settings.moveLimit then
                                 { game | tower = newTower, moveCount = game.moveCount + 1, p2MoveCount = game.p2MoveCount + 1
-                                , turn = Player1, c1 = -1, c2 = -1, status = Complete newWinner, p2Score = Basics.min newScore game.p2Score,
+                                , turn = Player1, c1 = -1, c2 = -1, status = Complete newWinner, p2Score = Basics.max newScore game.p2Score,
                                 winning = newWinner  }
                             else
                                 { game | tower = newTower, moveCount = game.moveCount + 1, p2MoveCount = game.p2MoveCount + 1
-                                , turn = Player1, c1 = -1, c2 = -1, stage = StageSelectC1, p2Score = Basics.min newScore game.p2Score
+                                , turn = Player1, c1 = -1, c2 = -1, stage = StageSelectC1, p2Score = Basics.max newScore game.p2Score
                                 , winning = newWinner }
                
         SelectC1 blockC1 ->
@@ -222,9 +222,9 @@ getTidiness tower =
     in
     case tidiness of
         Just t ->
-            (Array.length tower - t)
+            t
         Nothing ->
-            Array.length tower
+            0
 
 
 {-| Mark a block as touched
@@ -496,16 +496,10 @@ viewStatus game =
                     "Bot"
         
         player1Score =
-            if game.p1Score == game.settings.towerSize then
-                "∞"
-            else
-                String.fromInt game.p1Score
+            String.fromInt game.p1Score
 
         player2Score =
-            if game.p2Score == game.settings.towerSize then
-                "∞"
-            else
-                String.fromInt game.p2Score
+            String.fromInt game.p2Score
                         
     in
     div [ id "game-status", class statusClass ]
@@ -548,6 +542,12 @@ viewTower game =
                     "solo"
                 _ ->
                     "multi"
+
+        showRef = 
+            if game.status == Playing then
+                "show"
+            else
+                "hide"
 
          -- Convert a single block/cube to HTML
         blockView index block =
@@ -675,6 +675,52 @@ viewTower game =
             ]
             (List.indexedMap blockView (Array.toList game.tower)
                 |> List.reverse)
+        , div [ id "cube-reference", class showRef ] [
+            div [ class "cube-container ref"]
+                [ div [ class ("cube"), style "transform" ("rotateX(-15deg) rotateY(320deg)") ]
+                    [
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "0"] ],
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "1"] ],
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "2"] ],
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "3"] ],
+                        div [ class "cube-side"] [ ],
+                        div [ class "cube-side"] [ ]
+                    ]
+                ] 
+            , div [ class "cube-container ref"]
+                [ div [ class ("cube"), style "transform" ("rotateX(-15deg) rotateY(230deg)") ]
+                    [
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "0"] ],
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "1"] ],
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "2"] ],
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "3"] ],
+                        div [ class "cube-side"] [ ],
+                        div [ class "cube-side"] [ ]
+                    ]
+                ]
+            , div [ class "cube-container ref"]
+                [ div [ class ("cube"), style "transform" ("rotateX(-15deg) rotateY(140deg)") ]
+                    [
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "0"] ],
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "1"] ],
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "2"] ],
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "3"] ],
+                        div [ class "cube-side"] [ ],
+                        div [ class "cube-side"] [ ]
+                    ]
+                ]
+            , div [ class "cube-container ref"]
+                [ div [ class ("cube"), style "transform" ("rotateX(-15deg) rotateY(50deg)") ]
+                    [
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "0"] ],
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "1"] ],
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "2"] ],
+                        div [ class "cube-side"] [ div [class "cube-side-text"] [text "3"] ],
+                        div [ class "cube-side"] [ ],
+                        div [ class "cube-side"] [ ]
+                    ]
+                ]
+            ]
         ]
 
 {-| View rotate and undo buttons
@@ -772,7 +818,8 @@ makeBotMoveEasy game =
                 -- maps it to an object with c1, c2, offset, score
                 bestChoice list = 
                     List.map (\(c2, offset) -> {c1 = index, c2 = c2, offset = offset, score = getScore c2 offset}) list
-                        |> List.sortBy (\{ score, offset } -> score * 1000 - offset) -- higher offset is better
+                        |> List.sortBy (\{ score, offset } -> score * 1000 + offset) -- higher offset is better
+                        |> List.reverse
                         |> List.take 1
                 
             in
@@ -835,6 +882,7 @@ makeBotMoveHard game =
     List.map c1Options (Array.toList validBlocks)
         |> List.concat
         |> List.sortBy (\{ score } -> score)
+        |> List.reverse
         |> List.take 1
         |> List.map (\{ c1, c2, offset } -> (c1, c2, offset))
         |> Random.List.choose

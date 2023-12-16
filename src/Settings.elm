@@ -65,10 +65,10 @@ update msg settings =
             { settings | randomSeed = value }
 
         SetTowerSize size ->
-            { settings | towerSize = size }
+            { settings | towerSize = size, moveLimit = Basics.min settings.moveLimit (size // 2) }
 
-        SetMoveCount size ->
-            { settings | moveLimit = size }
+        SetMoveCount moveCount ->
+            { settings | moveLimit = moveCount }
         
         SetBotDifficulty difficulty ->
             { settings | botDifficulty = difficulty }

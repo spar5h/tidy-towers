@@ -50,6 +50,8 @@ Within the `public` folder, there are three essential static assets:
 
 # References
 
+Original Game: [Tidy Towers](https://dl.acm.org/doi/pdf/10.1145/3614559)
+
 Template for the entire game: [Gomoku](https://github.com/wjmn/gomoku)
 
 Random Tower Generation by Seed: [Effective Eavesdropping](https://github.com/wjmn/effective-eavesdropping)

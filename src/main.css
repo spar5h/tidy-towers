@@ -326,6 +326,19 @@ button#restart-button:active {
   position: relative;
 }
 
+#cube-reference {
+  text-align: left;
+  display: flex;
+  border: 1px dashed red;
+  height: 3rem;
+  width: 14.5rem;
+  background-color: rgb(255, 225, 225);
+}
+
+#cube-reference.hide {
+  display: none;
+}
+
 #game-rotate-container {
   display: flex;
   align-items: center;
@@ -400,6 +413,11 @@ button#restart-button:active {
   display: flex;
   position: relative;
 }
+
+.cube-container.ref {
+  margin-left: 1.3rem;
+}
+
 
 .cube {
   width: 100%;
