@@ -1,5 +1,7 @@
 # Tidy Towers Game for the Dr Ecco Heuristic Problem Solving Website
 
+Play Tidy Towers [here](https://cims.nyu.edu/drecco2016/games/2023/tidytowers/)!
+
 ![thumbnail](public/thumbnail.png)
 
 # Developing
